@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Receipe Manager</title>
+
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center">Update Receip</h1>
+
+    <form action="/update/{{ recipe.id }}" method="post">
+        <input type="text" name="title" id="title" value="{{ recipe.title }}">
+        <input type="text" name="making_time" id="making_time" value="{{ recipe.making_time }}">
+        <input type="text" name="serves" id="serves" value="{{ recipe.serves }}">
+        <input type="text" name="ingredients" id="ingredients" value="{{ recipe.ingredients }}">
+        <input type="text" name="cost" id="cost" value="{{ recipe.cost }}">
+        <input type="submit" value="Update Recipe">
+    </form>
+
+</div>
+{% endblock %}
