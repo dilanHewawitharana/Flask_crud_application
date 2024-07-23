@@ -1,9 +1,45 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<h1>Hello World</h1>
+<title>Receipe Manager</title>
+
 {% endblock %}
 
 {% block body %}
-<h1>Hello World 02</h1>
+<div class="content">
+    <h1>Receip Table</h1>
+
+    <table>
+        <tr>
+            <th>title</th>
+            <th>making_time</th>
+            <th>serves</th>
+            <th>ingredients</th>
+            <th>cost</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <a href="">Delete</a>
+                <br>
+                <a href="">Update</a>
+            </td>
+        </tr>
+    </table>
+
+    <form action="/" method="post">
+        <input type="text" name="title" id="title">
+        <input type="text" name="making_time" id="making_time">
+        <input type="text" name="serves" id="serves">
+        <input type="text" name="ingredients" id="ingredients">
+        <input type="text" name="cost" id="cost">
+        <input type="submit" value="Add Recipe">
+    </form>
+
+</div>
 {% endblock %}
