@@ -1,5 +1,5 @@
-from app import app, db
+from application import application, db
 
-with app.app_context():
+with application.app_context():
     db.create_all()
     print("Database tables created!")

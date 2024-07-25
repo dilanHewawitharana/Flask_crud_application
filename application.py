@@ -2,9 +2,9 @@ from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-db = SQLAlchemy(app)
+application = Flask(__name__)
+application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+db = SQLAlchemy(application)
 
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -20,7 +20,7 @@ class Recipe(db.Model):
         return '<Recipe %r' % self.id
 
 
-@app.route('/', methods=['POST', 'GET'])
+@application.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
         title = request.form['title']
@@ -42,7 +42,7 @@ def index():
         recipes = Recipe.query.order_by(Recipe.created_at).all()
         return render_template('index.html', recipes = recipes)
     
-@app.route('/delete/<int:id>')
+@application.route('/delete/<int:id>')
 def delete(id):
     recipe_to_delete = Recipe.query.get_or_404(id)
 
@@ -53,7 +53,7 @@ def delete(id):
     except:
         return 'There was a problem deleting that recipe'
     
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
+@application.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
     recipe_to_update = Recipe.query.get_or_404(id)
 
@@ -74,4 +74,4 @@ def update(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    application.run(debug=True)
