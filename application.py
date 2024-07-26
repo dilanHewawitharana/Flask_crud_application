@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 
@@ -41,6 +41,60 @@ def index():
     else:
         recipes = Recipe.query.order_by(Recipe.created_at).all()
         return render_template('index.html', recipes = recipes)
+
+@application.route('/recipes', methods=['POST', 'GET'])
+def recipes():
+    if request.method == 'POST':
+        data = request.get_json()
+        required_fields = ['title', 'making_time', 'serves', 'ingredients', 'cost']
+
+        if not all(field in data for field in required_fields):
+            return jsonify({
+                "message": "Recipe creation failed!",
+                "required": "title, making_time, serves, ingredients, cost"
+            }), 404
+        
+        # create new recipe and save to db
+        try:
+            new_recipe = Recipe(
+                title=data['title'],
+                making_time=data['making_time'],
+                serves=data['serves'],
+                ingredients=data['ingredients'],
+                cost=data['cost'],
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc)
+            )
+            db.session.add(new_recipe)
+            db.session.commit()
+
+            return jsonify({
+                "message": "Recipe successfully created!",
+                "recipe": {
+                    "id": new_recipe.id,
+                    "title": new_recipe.title,
+                    "making_time": new_recipe.making_time,
+                    "serves": new_recipe.serves,
+                    "ingredients": new_recipe.ingredients,
+                    "cost": new_recipe.cost,
+                    "created_at": new_recipe.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    "updated_at": new_recipe.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+                }
+            }), 200
+        except Exception as e:
+            return jsonify({"message": "Recipe creation failed!", "error": str(e)}), 404
+    else:
+        recipes = Recipe.query.order_by(Recipe.created_at).all()
+        recipes_list = [{
+            "id": recipe.id,
+            "title": recipe.title,
+            "making_time": recipe.making_time,
+            "serves": recipe.serves,
+            "ingredients": recipe.ingredients,
+            "cost": recipe.cost
+        } for recipe in recipes]
+
+        return jsonify({"recipes": recipes_list}), 200
     
 @application.route('/delete/<int:id>')
 def delete(id):
