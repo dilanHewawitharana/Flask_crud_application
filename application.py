@@ -1,9 +1,9 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timezone
 
 application = Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recipes_database.db'
 db = SQLAlchemy(application)
 
 class Recipe(db.Model):
@@ -13,8 +13,8 @@ class Recipe(db.Model):
     serves = db.Column(db.String(100), nullable=False)
     ingredients = db.Column(db.String(300), nullable=False)
     cost = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
  
     def __repr__(self):
         return '<Recipe %r' % self.id
