@@ -20,6 +20,9 @@ class Recipe(db.Model):
     def __repr__(self):
         return '<Recipe %r' % self.id
 
+@application.route('/')
+def home():
+    return "Access base url", 404
 
 @application.route('/recipes', methods=['POST', 'GET'])
 def recipes():
@@ -33,7 +36,7 @@ def recipes():
             return jsonify({
                 "message": "Recipe creation failed!",
                 "required": "title, making_time, serves, ingredients, cost"
-            }), 400
+            }), 200
         
         # create new recipe and save to db
         try:
@@ -78,27 +81,27 @@ def recipes():
 
         return jsonify({"recipes": recipes_list}), 200
     
-@application.route('/', methods=['POST', 'GET'])
-def index():
-    if request.method == 'POST':
-        title = request.form['title']
-        making_time = request.form['making_time']
-        serves = request.form['serves']
-        ingredients = request.form['ingredients']
-        cost = request.form['cost']
+# @application.route('/', methods=['POST', 'GET'])
+# def index():
+#     if request.method == 'POST':
+#         title = request.form['title']
+#         making_time = request.form['making_time']
+#         serves = request.form['serves']
+#         ingredients = request.form['ingredients']
+#         cost = request.form['cost']
 
-        new_recipe = Recipe(title=title, making_time=making_time, serves=serves, ingredients=ingredients, cost=cost)
+#         new_recipe = Recipe(title=title, making_time=making_time, serves=serves, ingredients=ingredients, cost=cost)
 
-        try:
-            db.session.add(new_recipe)
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'There was an error when save data...'
+#         try:
+#             db.session.add(new_recipe)
+#             db.session.commit()
+#             return redirect('/')
+#         except:
+#             return 'There was an error when save data...'
 
-    else:
-        recipes = Recipe.query.order_by(Recipe.created_at).all()
-        return render_template('index.html', recipes = recipes)
+#     else:
+#         recipes = Recipe.query.order_by(Recipe.created_at).all()
+#         return render_template('index.html', recipes = recipes)
     
 @application.route('/delete/<int:id>')
 def delete(id):
