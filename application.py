@@ -107,6 +107,56 @@ def get_recipe_by_id(id):
         logging.error(f"Error retrieving recipe with id {id}: {e}")
         return jsonify({"message": "An error occurred while retrieving the recipe", "error": str(e)}), 500
 
+@application.route('/recipes/<int:id>', methods=['PATCH'])
+def update_recipe(id):
+    try:
+        # Find the recipe by ID
+        recipe = Recipe.query.get(id)
+        if not recipe:
+            return jsonify({"message": "Recipe not found"}), 404
+
+        # Get the request data
+        data = request.get_json()
+
+        # Update the recipe attributes
+        if 'title' in data:
+            recipe.title = data['title']
+        if 'making_time' in data:
+            recipe.making_time = data['making_time']
+        if 'serves' in data:
+            recipe.serves = data['serves']
+        if 'ingredients' in data:
+            recipe.ingredients = data['ingredients']
+        if 'cost' in data:
+            recipe.cost = data['cost']
+        
+        # Update the 'updated_at' field
+        recipe.updated_at = datetime.now(timezone.utc)
+
+        # Commit changes to the database
+        db.session.commit()
+
+        # Prepare the response data
+        updated_recipe = [{
+            "id": recipe.id,
+            "title": recipe.title,
+            "making_time": recipe.making_time,
+            "serves": recipe.serves,
+            "ingredients": recipe.ingredients,
+            "cost": recipe.cost,
+            "created_at": recipe.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            "updated_at": recipe.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+        }]
+
+        return jsonify({
+            "message": "Recipe successfully updated!",
+            "recipe": updated_recipe
+        }), 200
+
+    except Exception as e:
+        logging.error(f"Error updating recipe with id {id}: {e}")
+        return jsonify({"message": "An error occurred while updating the recipe", "error": str(e)}), 500
+
     
 # @application.route('/', methods=['POST', 'GET'])
 # def index():
