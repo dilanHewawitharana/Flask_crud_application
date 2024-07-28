@@ -81,6 +81,33 @@ def recipes():
 
         return jsonify({"recipes": recipes_list}), 200
     
+@application.route('/recipes/<int:id>')
+def get_recipe_by_id(id):
+    try:
+        # Query the database for the recipe with the given ID
+        recipe = Recipe.query.get(id)
+        if recipe is None:
+            return jsonify({"message": "Recipe not found"}), 404
+        
+        # Prepare the response data
+        recipe_data = [{
+            "id": recipe.id,
+            "title": recipe.title,
+            "making_time": recipe.making_time,
+            "serves": recipe.serves,
+            "ingredients": recipe.ingredients,
+            "cost": recipe.cost
+        }]
+
+        return jsonify({
+            "message": "Recipe details by id",
+            "recipe": recipe_data
+        }), 200
+    except Exception as e:
+        logging.error(f"Error retrieving recipe with id {id}: {e}")
+        return jsonify({"message": "An error occurred while retrieving the recipe", "error": str(e)}), 500
+
+    
 # @application.route('/', methods=['POST', 'GET'])
 # def index():
 #     if request.method == 'POST':
