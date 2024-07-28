@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
+import logging
 
 application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recipes_database.db'
@@ -24,6 +25,8 @@ class Recipe(db.Model):
 def recipes():
     if request.method == 'POST':
         data = request.get_json()
+        logging.info(f"Received POST data: {data}")
+
         required_fields = ['title', 'making_time', 'serves', 'ingredients', 'cost']
 
         if not all(field in data for field in required_fields):
@@ -60,6 +63,7 @@ def recipes():
                 }
             }), 200
         except Exception as e:
+            logging.error(f"Error creating recipe: {e}")
             return jsonify({"message": "Recipe creation failed!", "error": str(e)}), 404
     else:
         recipes = Recipe.query.order_by(Recipe.created_at).all()
