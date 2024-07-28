@@ -178,19 +178,19 @@ def delete_recipe(id):
         return jsonify(res), 500
     
 @application.route('/home', methods=['POST', 'GET'])
-def recipes():
+def recipes_index():
     if request.method == 'POST':
         data = request.get_json()
 
         required_fields = ['title', 'making_time', 'serves', 'ingredients', 'cost']
-
+        
         if not data or not all(field in data for field in required_fields):
-            return jsonify({
+            res = {
                 "message": "Recipe creation failed!",
                 "required": "title, making_time, serves, ingredients, cost"
-            }), 200
-    
-            return render_template('index.html', recipes = recipes)
+            }
+            return jsonify(res), 200
+            render_template('index.html', recipes = recipes)
         
         # create new recipe and save to db
         try:
@@ -206,7 +206,7 @@ def recipes():
             db.session.add(new_recipe)
             db.session.commit()
 
-            return jsonify({
+            res = {
                 "message": "Recipe successfully created!",
                 "recipe": [{
                     "id": new_recipe.id,
@@ -218,9 +218,12 @@ def recipes():
                     "created_at": new_recipe.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                     "updated_at": new_recipe.updated_at.strftime('%Y-%m-%d %H:%M:%S')
                 }]
-            }), 200
+            }
+
+            return jsonify(res), 200
         except Exception as e:
-            return jsonify({"message": "Recipe creation failed!", "error": str(e)}), 404
+            res = {"message": "Recipe creation failed!", "error": str(e)}
+            return jsonify(res), 404
     else:
         recipes = Recipe.query.order_by(Recipe.created_at).all()
         recipes_list = [{
@@ -232,7 +235,8 @@ def recipes():
             "cost": recipe.cost
         } for recipe in recipes]
 
-        return jsonify({"recipes": recipes_list}), 200
+        res = {"recipes": recipes_list}
+        return jsonify(res), 200
     
 # @application.route('/', methods=['POST', 'GET'])
 # def index():
