@@ -157,6 +157,24 @@ def update_recipe(id):
         logging.error(f"Error updating recipe with id {id}: {e}")
         return jsonify({"message": "An error occurred while updating the recipe", "error": str(e)}), 500
 
+@application.route('/recipes/<int:id>', methods=['DELETE'])
+def delete_recipe(id):
+    try:
+        # Find the recipe by ID
+        recipe = Recipe.query.get(id)
+        if not recipe:
+            return jsonify({"message": "No recipe found"}), 200
+
+        # Delete the recipe from the database
+        db.session.delete(recipe)
+        db.session.commit()
+
+        return jsonify({"message": "Recipe successfully removed!"}), 200
+
+    except Exception as e:
+        logging.error(f"Error deleting recipe with id {id}: {e}")
+        return jsonify({"message": "An error occurred while deleting the recipe", "error": str(e)}), 500
+
     
 # @application.route('/', methods=['POST', 'GET'])
 # def index():
