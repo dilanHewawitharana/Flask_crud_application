@@ -54,7 +54,7 @@ def recipes():
 
             return jsonify({
                 "message": "Recipe successfully created!",
-                "recipe": {
+                "recipe": [{
                     "id": new_recipe.id,
                     "title": new_recipe.title,
                     "making_time": new_recipe.making_time,
@@ -63,7 +63,7 @@ def recipes():
                     "cost": new_recipe.cost,
                     "created_at": new_recipe.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                     "updated_at": new_recipe.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-                }
+                }]
             }), 200
         except Exception as e:
             logging.error(f"Error creating recipe: {e}")
