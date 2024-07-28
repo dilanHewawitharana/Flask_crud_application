@@ -29,11 +29,11 @@ def recipes():
 
         required_fields = ['title', 'making_time', 'serves', 'ingredients', 'cost']
 
-        if not all(field in data for field in required_fields):
+        if not data or not all(field in data for field in required_fields):
             return jsonify({
                 "message": "Recipe creation failed!",
                 "required": "title, making_time, serves, ingredients, cost"
-            }), 400
+            }), 200
         
         # create new recipe and save to db
         try:
