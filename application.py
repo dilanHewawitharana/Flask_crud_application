@@ -1,7 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
-import logging
 
 application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recipes_database.db'
@@ -22,13 +21,12 @@ class Recipe(db.Model):
 
 @application.route('/')
 def home():
-    return "Access base url", 404
+    return jsonify({"message": "Access base url"}), 404
 
 @application.route('/recipes', methods=['POST', 'GET'])
 def recipes():
     if request.method == 'POST':
         data = request.get_json()
-        logging.info(f"Received POST data: {data}")
 
         required_fields = ['title', 'making_time', 'serves', 'ingredients', 'cost']
 
@@ -66,7 +64,6 @@ def recipes():
                 }]
             }), 200
         except Exception as e:
-            logging.error(f"Error creating recipe: {e}")
             return jsonify({"message": "Recipe creation failed!", "error": str(e)}), 404
     else:
         recipes = Recipe.query.order_by(Recipe.created_at).all()
@@ -84,7 +81,6 @@ def recipes():
 @application.route('/recipes/<int:id>')
 def get_recipe_by_id(id):
     try:
-        # Query the database for the recipe with the given ID
         recipe = Recipe.query.get(id)
         if recipe is None:
             return jsonify({"message": "Recipe not found"}), 404
@@ -104,21 +100,18 @@ def get_recipe_by_id(id):
             "recipe": recipe_data
         }), 200
     except Exception as e:
-        logging.error(f"Error retrieving recipe with id {id}: {e}")
         return jsonify({"message": "An error occurred while retrieving the recipe", "error": str(e)}), 500
 
 @application.route('/recipes/<int:id>', methods=['PATCH'])
 def update_recipe(id):
     try:
-        # Find the recipe by ID
         recipe = Recipe.query.get(id)
         if not recipe:
             return jsonify({"message": "Recipe not found"}), 404
 
-        # Get the request data
         data = request.get_json()
 
-        # Update the recipe attributes
+        # Update each recipe attributes if need
         if 'title' in data:
             recipe.title = data['title']
         if 'making_time' in data:
@@ -133,10 +126,8 @@ def update_recipe(id):
         # Update the 'updated_at' field
         recipe.updated_at = datetime.now(timezone.utc)
 
-        # Commit changes to the database
         db.session.commit()
 
-        # Prepare the response data
         updated_recipe = [{
             "id": recipe.id,
             "title": recipe.title,
@@ -154,25 +145,22 @@ def update_recipe(id):
         }), 200
 
     except Exception as e:
-        logging.error(f"Error updating recipe with id {id}: {e}")
         return jsonify({"message": "An error occurred while updating the recipe", "error": str(e)}), 500
 
 @application.route('/recipes/<int:id>', methods=['DELETE'])
 def delete_recipe(id):
     try:
-        # Find the recipe by ID
         recipe = Recipe.query.get(id)
         if not recipe:
             return jsonify({"message": "No recipe found"}), 200
 
-        # Delete the recipe from the database
+        # Delete recipe from the database
         db.session.delete(recipe)
         db.session.commit()
 
         return jsonify({"message": "Recipe successfully removed!"}), 200
 
     except Exception as e:
-        logging.error(f"Error deleting recipe with id {id}: {e}")
         return jsonify({"message": "An error occurred while deleting the recipe", "error": str(e)}), 500
 
     
