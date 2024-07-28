@@ -40,12 +40,23 @@
     </table>
     {% endif %}
 
-    <form action="/" method="post">
-        <input type="text" name="title" id="title">
-        <input type="text" name="making_time" id="making_time">
-        <input type="text" name="serves" id="serves">
-        <input type="text" name="ingredients" id="ingredients">
-        <input type="text" name="cost" id="cost">
+    <h2>Add a New Recipe</h2>
+    <form action="/recipes" method="post">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" required>
+        <br>
+        <label for="making_time">Making Time:</label>
+        <input type="text" name="making_time" id="making_time" required>
+        <br>
+        <label for="serves">Serves:</label>
+        <input type="text" name="serves" id="serves" required>
+        <br>
+        <label for="ingredients">Ingredients:</label>
+        <input type="text" name="ingredients" id="ingredients" required>
+        <br>
+        <label for="cost">Cost:</label>
+        <input type="number" name="cost" id="cost" required>
+        <br>
         <input type="submit" value="Add Recipe">
     </form>
 
