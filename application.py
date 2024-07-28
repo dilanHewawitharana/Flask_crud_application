@@ -33,7 +33,7 @@ def recipes():
             return jsonify({
                 "message": "Recipe creation failed!",
                 "required": "title, making_time, serves, ingredients, cost"
-            }), 200
+            }), 400
         
         # create new recipe and save to db
         try:
