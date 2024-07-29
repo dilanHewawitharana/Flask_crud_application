@@ -1,35 +1,35 @@
-# Flask_Rest_API_application
+# Flask REST API Application
 
-This is a Basic Rest API application using python Flask module.
+This project implements a basic REST API application using the Python Flask framework.
 
-create_db.py
+## Project Structure
 
-This file purpose is to create data base and insert the initial data into data base.
-I used sqlLite as the data base.
-After clone this repo into local machine, you need to run 
-python create_db.py
-to run this file. It will create a new databse instance called recipes_database.db
+The repository contains the following files and directories:
 
-application.py
+- **create_db.py**: Creates a database (`recipes_database.db`) and inserts initial data (SQLite). After cloning the repository, run `python create_db.py` to create the database instance.
+- **application.py**: Defines five REST API endpoints:
+    - `POST /recipes`: Creates a recipe.
+    - `GET /recipes`: Returns a list of all recipes.
+    - `GET /recipes/<id>`: Returns the selected recipe by ID.
+    - `PATCH /recipes/<id>`: Updates the selected recipe.
+    - `DELETE /recipes/<id>`: Deletes the selected recipe.
+- **requirements.txt**: Lists all necessary dependencies for the application.
 
-This file consist of 5 rest api. Content is as follows.
+## Running the Application
 
-POST /recipes -> Create a recipe.
-GET /recipes -> Return the list of all of the recipes.
-GET /recipes/(id) -> Return the selected recipe.
-PATCH /recipes/(id) -> Update the selected recipe
-DELETE /recipes/(id) -> Delete the selected recipe.
+1. Clone the repository.
+2. Install the dependencies using `pip install -r requirements.txt`.
+3. Create the database by running `python create_db.py`.
+4. Run the application using `python application.py`.
 
-To run appication -> python application.py
+## Deployment Notes
 
-Additional Notes
+- This application was initially a CRUD (Create, Read, Update, Delete) application. However, to pass test cases, the web application components were removed. Consequently, some unused HTML files may reside in the `templates` directory.
+- This application is deployed to Amazon Web Services (AWS) using App Runner.
+- **Deployed URL:** https://wkypax7uxy.ap-southeast-2.awsapprunner.com/
 
-the requirements.txt file includes all necessary dependencies
-I started this application as a crup application. but in order pass test cases I have to remove web application part. So there are some unwanted html.files in templates directory.
+## GitHub Repository
 
-This application is deployed into amazon using App Runner service.
-Deployed url is https://wkypax7uxy.ap-southeast-2.awsapprunner.com/
+This project is hosted on GitHub: https://github.com/dilanHewawitharana/Flask_rest_api_application.
 
-All the files are uploaded into github. Github repo url https://github.com/dilanHewawitharana/Flask_rest_api_application
-
-You can check all the activities related to development using github commit history.
+You can track development via GitHub commit history.
