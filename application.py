@@ -177,67 +177,6 @@ def delete_recipe(id):
         res = {"message": "An error occurred while deleting the recipe", "error": str(e)}
         return jsonify(res), 500
     
-@application.route('/home', methods=['POST', 'GET'])
-def recipes_index():
-    if request.method == 'POST':
-        data = request.get_json()
-
-        required_fields = ['title', 'making_time', 'serves', 'ingredients', 'cost']
-        
-        if not data or not all(field in data for field in required_fields):
-            res = {
-                "message": "Recipe creation failed!",
-                "required": "title, making_time, serves, ingredients, cost"
-            }
-            return jsonify(res), 200
-            render_template('index.html', recipes = recipes)
-        
-        # create new recipe and save to db
-        try:
-            new_recipe = Recipe(
-                title=data['title'],
-                making_time=data['making_time'],
-                serves=data['serves'],
-                ingredients=data['ingredients'],
-                cost=data['cost'],
-                created_at=datetime.now(timezone.utc),
-                updated_at=datetime.now(timezone.utc)
-            )
-            db.session.add(new_recipe)
-            db.session.commit()
-
-            res = {
-                "message": "Recipe successfully created!",
-                "recipe": [{
-                    "id": new_recipe.id,
-                    "title": new_recipe.title,
-                    "making_time": new_recipe.making_time,
-                    "serves": new_recipe.serves,
-                    "ingredients": new_recipe.ingredients,
-                    "cost": new_recipe.cost,
-                    "created_at": new_recipe.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                    "updated_at": new_recipe.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-                }]
-            }
-
-            return jsonify(res), 200
-        except Exception as e:
-            res = {"message": "Recipe creation failed!", "error": str(e)}
-            return jsonify(res), 404
-    else:
-        recipes = Recipe.query.order_by(Recipe.created_at).all()
-        recipes_list = [{
-            "id": recipe.id,
-            "title": recipe.title,
-            "making_time": recipe.making_time,
-            "serves": recipe.serves,
-            "ingredients": recipe.ingredients,
-            "cost": recipe.cost
-        } for recipe in recipes]
-
-        res = {"recipes": recipes_list}
-        return jsonify(res), 200
-    
 # @application.route('/', methods=['POST', 'GET'])
 # def index():
 #     if request.method == 'POST':
@@ -260,36 +199,36 @@ def recipes_index():
 #         recipes = Recipe.query.order_by(Recipe.created_at).all()
 #         return render_template('index.html', recipes = recipes)
     
-@application.route('/delete/<int:id>')
-def delete(id):
-    recipe_to_delete = Recipe.query.get_or_404(id)
+# @application.route('/delete/<int:id>')
+# def delete(id):
+#     recipe_to_delete = Recipe.query.get_or_404(id)
 
-    try:
-        db.session.delete(recipe_to_delete)
-        db.session.commit()
-        return redirect('/')
-    except:
-        return 'There was a problem deleting that recipe'
+#     try:
+#         db.session.delete(recipe_to_delete)
+#         db.session.commit()
+#         return redirect('/')
+#     except:
+#         return 'There was a problem deleting that recipe'
     
-@application.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    recipe_to_update = Recipe.query.get_or_404(id)
+# @application.route('/update/<int:id>', methods=['GET', 'POST'])
+# def update(id):
+#     recipe_to_update = Recipe.query.get_or_404(id)
 
-    if request.method == 'POST':
-        recipe_to_update.title = request.form['title']
-        recipe_to_update.making_time = request.form['making_time']
-        recipe_to_update.serves = request.form['serves']
-        recipe_to_update.ingredients = request.form['ingredients']
-        recipe_to_update.cost = request.form['cost']
+#     if request.method == 'POST':
+#         recipe_to_update.title = request.form['title']
+#         recipe_to_update.making_time = request.form['making_time']
+#         recipe_to_update.serves = request.form['serves']
+#         recipe_to_update.ingredients = request.form['ingredients']
+#         recipe_to_update.cost = request.form['cost']
 
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'There was a problem updating your recipe'
-    else:
-        return render_template('update.html', recipe=recipe_to_update)
+#         try:
+#             db.session.commit()
+#             return redirect('/')
+#         except:
+#             return 'There was a problem updating your recipe'
+#     else:
+#         return render_template('update.html', recipe=recipe_to_update)
 
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0',port=8080)
+    application.run(host='0.0.0.0',port=8080, debug=True)
